@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<title>Memory Game - Food Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&family=Fredoka:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#1399e6;
+    --blue-dark:#0b62ae;
+    --card:#ffffff;
+    --ink:#17375e;
+    --green:#23bd73;
+    --red:#ff5b6f;
+    --yellow:#ffd65a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;min-height:100%;}
+  body{
+    font-family:'Quicksand',system-ui,sans-serif;
+    background:radial-gradient(circle at 20% 10%,#58caff 0 8%,transparent 26%),
+               radial-gradient(circle at 90% 90%,#0787d7 0 10%,transparent 30%),
+               linear-gradient(180deg,#19aaf2 0%,#0c8cde 100%);
+    color:var(--ink);
+    overflow-x:hidden;
+  }
+  .screen{min-height:100vh;width:100%;display:flex;flex-direction:column;align-items:center;padding:18px 16px 28px;position:relative;overflow:hidden}
+  .bubble{position:absolute;border-radius:50%;background:rgba(255,255,255,.18);animation:float 8s ease-in-out infinite;pointer-events:none}
+  .b1{width:110px;height:110px;left:5%;top:12%;animation-delay:0s}.b2{width:70px;height:70px;right:7%;top:18%;animation-delay:1s}.b3{width:130px;height:130px;right:10%;bottom:8%;animation-delay:2s}.b4{width:50px;height:50px;left:12%;bottom:14%;animation-delay:3s}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+  h1{
+    font-family:'Fredoka','Arial Rounded MT Bold',system-ui,sans-serif;
+    font-size:clamp(40px,8vw,86px);
+    line-height:.9;
+    letter-spacing:2px;
+    color:white;
+    text-align:center;
+    text-transform:uppercase;
+    text-shadow:0 5px 0 #0873bd,0 9px 0 rgba(0,0,0,.14),0 0 1px #0873bd;
+    margin:8px 0 18px;
+    -webkit-text-stroke:1px rgba(9,96,167,.18);
+  }
+  .topbar{width:min(860px,96vw);display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;color:white;font-weight:700;text-shadow:0 2px 0 rgba(0,0,0,.12);font-size:clamp(15px,2.5vw,20px)}
+  .pill{background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.35);padding:8px 14px;border-radius:999px;backdrop-filter:blur(4px)}
+  .grid{
+    width:min(860px,96vw);
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:clamp(10px,2vw,18px);
+  }
+  .card{aspect-ratio:1/1;border:none;background:transparent;cursor:pointer;position:relative;border-radius:22px;outline:none}
+  .card:disabled{cursor:default}
+  .card-inner{position:absolute;inset:0;border-radius:22px;filter:drop-shadow(0 10px 0 var(--blue-dark)) drop-shadow(0 14px 8px rgba(0,0,0,.18))}
+  .face{position:absolute;inset:0;border-radius:22px;display:flex;align-items:center;justify-content:center;background:white;border:5px solid rgba(255,255,255,.9);transition:opacity .25s ease, transform .25s ease}
+  .front{background:linear-gradient(145deg,#fff,#f2fbff)}
+  .front::before{content:'?';font-family:'Fredoka',sans-serif;font-size:clamp(34px,6vw,58px);color:#159de6;text-shadow:0 3px 0 #d5f2ff}
+  .front::after{content:'';position:absolute;inset:12%;border-radius:18px;border:3px dashed #b9eaff;opacity:.95}
+  .back{background:#fff;opacity:0;transform:scale(.85);pointer-events:none}
+  .card.flipped .front,.card.matched .front{opacity:0;transform:scale(.85)}
+  .card.flipped .back,.card.matched .back{opacity:1;transform:scale(1)}
+  .food-svg{width:82%;height:82%;display:block}
+  .matched .card-inner{animation:matchedPulse .7s ease both}
+  @keyframes matchedPulse{0%,100%{filter:drop-shadow(0 10px 0 var(--blue-dark)) drop-shadow(0 14px 8px rgba(0,0,0,.18))}50%{filter:drop-shadow(0 10px 0 #0a9d69) drop-shadow(0 0 22px rgba(255,255,255,.8))}}
+  .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,50,115,.42);z-index:100;padding:16px;backdrop-filter:blur(4px)}
+  .overlay.show{display:flex;animation:fadeIn .2s ease both}@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .popup{width:min(560px,94vw);background:white;border-radius:28px;padding:28px 26px;box-shadow:0 18px 50px rgba(0,31,84,.35);text-align:center;border:5px solid #f3fbff;transform:scale(.92);animation:popIn .25s ease forwards;font-family:'Quicksand',system-ui,sans-serif}
+  @keyframes popIn{to{transform:scale(1)}}
+  .popup h2{font-size:clamp(22px,4vw,32px);color:#0b66b4;margin-bottom:14px;font-weight:700}
+  .question{font-size:clamp(20px,4vw,28px);line-height:1.35;color:#102f54;margin-bottom:20px;white-space:pre-line;font-weight:700}
+  .answers{display:grid;gap:12px;margin-top:8px}
+  .answer{border:none;border-radius:18px;background:#edf8ff;color:#123b65;padding:14px 16px;text-align:left;font-family:'Quicksand',system-ui,sans-serif;font-size:clamp(18px,3vw,23px);font-weight:700;cursor:pointer;box-shadow:0 5px 0 #b7def8;transition:transform .1s,background .15s,box-shadow .15s}
+  .answer:hover{transform:translateY(-2px)}.answer:active{transform:translateY(2px);box-shadow:0 2px 0 #b7def8}
+  .answer.correct{background:#dff9eb;box-shadow:0 5px 0 #28b975;color:#0c6841}.answer.wrong{background:#ffe6eb;box-shadow:0 5px 0 #ef5d72;color:#98243a}
+  .feedback{min-height:36px;margin-top:18px;font-size:clamp(20px,4vw,28px);font-weight:700}.feedback.good{color:#16a463}.feedback.bad{color:#e9475e}
+  .continue{display:none;margin-top:12px;border:none;border-radius:18px;background:linear-gradient(135deg,#ffd75f,#ff9b3e);color:#673200;font-family:'Fredoka',sans-serif;font-size:22px;padding:13px 26px;cursor:pointer;box-shadow:0 6px 0 #d3741d}.continue.show{display:inline-block}.continue:active{transform:translateY(3px);box-shadow:0 3px 0 #d3741d}
+  .celebration{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:160;background:linear-gradient(180deg,#18aafa,#087dd2);padding:20px;overflow:hidden}.celebration.show{display:flex}
+  .end-card{width:min(620px,94vw);background:white;border-radius:34px;padding:34px 26px;text-align:center;box-shadow:0 20px 60px rgba(0,38,100,.38);border:6px solid #e9f9ff;position:relative;z-index:2}
+  .end-card h2{font-family:'Fredoka',sans-serif;color:#0b69bd;font-size:clamp(36px,7vw,64px);line-height:1;text-shadow:0 4px 0 #d6f3ff;margin-bottom:14px}.end-card p{font-size:clamp(20px,4vw,28px);font-weight:700;line-height:1.35;margin-bottom:16px}.stars{font-size:44px;margin:10px 0;letter-spacing:8px}.play-again{border:none;border-radius:22px;background:linear-gradient(135deg,#ffdc5c,#ff9140);font-family:'Fredoka',sans-serif;font-size:clamp(22px,4vw,30px);padding:16px 30px;color:#683300;box-shadow:0 7px 0 #d36c16;cursor:pointer}.play-again:active{transform:translateY(4px);box-shadow:0 3px 0 #d36c16}
+  .confetti{position:absolute;width:12px;height:18px;top:-30px;animation:fall linear forwards;z-index:1}@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+  @media (max-width:640px){.screen{padding:12px 10px 20px}.grid{gap:9px}.face{border-width:3px;border-radius:16px}.card-inner{border-radius:16px;filter:drop-shadow(0 7px 0 var(--blue-dark)) drop-shadow(0 10px 6px rgba(0,0,0,.18))}.front::after{border-radius:12px;inset:10%}.topbar{padding:0 2px}.pill{padding:6px 10px}.popup{padding:22px 18px;border-radius:24px}.answer{border-radius:15px;padding:12px}}
+</style>
+</head>
+<body>
+  <main class="screen">
+    <span class="bubble b1"></span><span class="bubble b2"></span><span class="bubble b3"></span><span class="bubble b4"></span>
+    <h1>MEMORY GAME</h1>
+    <div class="topbar"><div class="pill">Pairs: <span id="pairsFound">0</span>/8</div><div class="pill">Questions: <span id="questionsDone">0</span></div></div>
+    <section id="grid" class="grid" aria-label="Memory game cards"></section>
+  </main>
+
+  <div id="quizOverlay" class="overlay" role="dialog" aria-modal="true">
+    <div class="popup">
+      <h2>Quiz Time! ⭐</h2>
+      <div id="questionText" class="question"></div>
+      <div id="answers" class="answers"></div>
+      <div id="feedback" class="feedback"></div>
+      <button id="continueBtn" class="continue">Continue</button>
+    </div>
+  </div>
+
+  <section id="celebration" class="celebration">
+    <div class="end-card">
+      <h2>🎉 Amazing Job! 🎉</h2>
+      <p>You found all the pairs and answered the questions!</p>
+      <div class="stars">⭐⭐⭐</div>
+      <button class="play-again" onclick="restartGame()">🔄 Play Again</button>
+    </div>
+  </section>
+
+<script>
+const foodIcons={
+  hamburger:`<svg class="food-svg" viewBox="0 0 120 120" aria-label="Hamburger"><ellipse cx="60" cy="44" rx="42" ry="24" fill="#f7b856"/><path d="M22 47c6-26 70-31 76 0" fill="#ffd277"/><g fill="#fff3c4"><circle cx="43" cy="31" r="3"/><circle cx="58" cy="27" r="3"/><circle cx="74" cy="32" r="3"/></g><rect x="22" y="51" width="76" height="11" rx="5" fill="#4c8d3b"/><path d="M19 61c13 8 24-7 36 1 13 8 23-6 46 0" fill="none" stroke="#65c85c" stroke-width="9" stroke-linecap="round"/><rect x="25" y="68" width="70" height="13" rx="6" fill="#d55e3d"/><rect x="26" y="81" width="68" height="14" rx="7" fill="#ffd06a"/><ellipse cx="60" cy="94" rx="39" ry="11" fill="#e99f48"/></svg>`,
+  hotdog:`<svg class="food-svg" viewBox="0 0 120 120" aria-label="Hot dog"><g transform="rotate(-12 60 60)"><rect x="20" y="41" width="80" height="38" rx="19" fill="#f0bd63"/><rect x="27" y="50" width="66" height="20" rx="10" fill="#d7563c"/><path d="M30 59c9-13 18 13 27 0s18 13 28 0" fill="none" stroke="#ffd33f" stroke-width="6" stroke-linecap="round"/><path d="M25 43c12 5 57 5 70 0" stroke="#ffd98d" stroke-width="8" stroke-linecap="round"/></g></svg>`,
+  fries:`<svg class="food-svg" viewBox="0 0 120 120" aria-label="French fries"><g fill="#ffd966" stroke="#edb43c" stroke-width="3"><rect x="31" y="21" width="9" height="55" rx="4" transform="rotate(-8 35 49)"/><rect x="45" y="16" width="9" height="62" rx="4"/><rect x="59" y="22" width="9" height="56" rx="4" transform="rotate(7 63 50)"/><rect x="73" y="18" width="9" height="61" rx="4" transform="rotate(12 77 49)"/></g><path d="M28 52h64l-9 48H37z" fill="#e83e48"/><path d="M34 60h52l-5 33H39z" fill="#ff5964"/><path d="M42 68h36" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg>`,
+  pizza:`<svg class="food-svg" viewBox="0 0 120 120" aria-label="Pizza slice"><path d="M30 19c29 6 49 20 62 50L49 101z" fill="#f4bd46"/><path d="M30 19c28 5 49 19 62 50" fill="none" stroke="#d96b37" stroke-width="12" stroke-linecap="round"/><path d="M47 45c5 8 18 11 24 7" fill="none" stroke="#fff2a6" stroke-width="7" stroke-linecap="round"/><g fill="#e7473d"><circle cx="52" cy="39" r="7"/><circle cx="68" cy="64" r="7"/><circle cx="53" cy="77" r="6"/></g><g fill="#67bd50"><circle cx="64" cy="46" r="4"/><circle cx="78" cy="73" r="4"/></g></svg>`,
+  icecream:`<svg class="food-svg" viewBox="0 0 120 120" aria-label="Ice cream"><path d="M43 62h34l-17 42z" fill="#d99a47"/><path d="M47 70h26M51 82h18" stroke="#b9762e" stroke-width="3"/><circle cx="48" cy="54" r="18" fill="#ff9bc1"/><circle cx="68" cy="54" r="18" fill="#8fd7ff"/><circle cx="59" cy="39" r="18" fill="#fff1aa"/><g fill="#e95d7a"><circle cx="45" cy="45" r="2"/><circle cx="63" cy="32" r="2"/><circle cx="73" cy="53" r="2"/></g></svg>`,
+  taco:`<svg class="food-svg" viewBox="0 0 120 120" aria-label="Taco"><path d="M23 75c5-31 24-49 58-46 20 3 34 20 15 46z" fill="#ffd15c"/><path d="M23 75h73" stroke="#d7982f" stroke-width="8" stroke-linecap="round"/><g><circle cx="50" cy="54" r="9" fill="#7acb58"/><circle cx="66" cy="49" r="8" fill="#e64f3f"/><circle cx="76" cy="61" r="9" fill="#7acb58"/><circle cx="44" cy="67" r="7" fill="#8b4c2d"/><circle cx="63" cy="68" r="7" fill="#8b4c2d"/></g></svg>`,
+  milkshake:`<svg class="food-svg" viewBox="0 0 120 120" aria-label="Milkshake"><path d="M39 42h42l-6 58H45z" fill="#ff9fc8"/><path d="M42 49h36l-5 45H47z" fill="#ffc4dd"/><ellipse cx="60" cy="42" rx="24" ry="8" fill="#ffe8f2"/><path d="M73 16L61 73" stroke="#4bb6ee" stroke-width="6" stroke-linecap="round"/><path d="M70 16l-3 14" stroke="#fff" stroke-width="2"/><circle cx="60" cy="31" r="15" fill="#fff"/><circle cx="68" cy="20" r="8" fill="#e94343"/><path d="M43 63h34" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg>`,
+  cupcake:`<svg class="food-svg" viewBox="0 0 120 120" aria-label="Cupcake"><path d="M37 57h46l-7 43H44z" fill="#7cc4ff"/><path d="M43 64h34M45 76h30" stroke="#4a9add" stroke-width="4"/><path d="M33 60c-8-20 11-29 24-22 5-18 31-12 29 7 13 2 15 18 5 25z" fill="#ffb1cf"/><circle cx="59" cy="35" r="6" fill="#e84242"/><g fill="#fff4a2"><circle cx="47" cy="54" r="2"/><circle cx="67" cy="48" r="2"/><circle cx="77" cy="59" r="2"/></g></svg>`
+};
+const pairNames=['hamburger','hotdog','fries','pizza','icecream','taco','milkshake','cupcake'];
+const questions=[
+ {q:'Can I have some __________, please?',a:['a) apple','b) apples','c) bread'],c:1},
+ {q:'Can I have some __________, please?',a:['a) carrots','b) carrot','c) milk'],c:0},
+ {q:'Can I have some __________, please?',a:['a) orange','b) oranges','c) cheese'],c:1},
+ {q:'Can I have some __________, please?',a:['a) tomato','b) tomatoes','c) rice'],c:1},
+ {q:'Complete the dialogue.\n\nCan I have some pears, please?\nHow many?\n__________, please.',a:['a) Three','b) Some','c) Much'],c:0},
+ {q:'Complete the dialogue.\n\nCan I have some bananas, please?\nHow many?\n__________, please.',a:['a) Five','b) Any','c) A'],c:0},
+ {q:'Complete the dialogue.\n\nCan I have some lemons, please?\nHow many?\n__________, please.',a:['a) Four','b) Some','c) Much'],c:0},
+ {q:'Complete the dialogue.\n\nCan I have some mangoes, please?\nHow many?\n__________, please.',a:['a) Two','b) Any','c) A'],c:0},
+ {q:'Challenge\n\nCan I have some __________, please?\nHow many?\nSix, please.',a:['a) onions','b) onion','c) bread'],c:0},
+ {q:'Challenge\n\nCan I have some __________, please?\nHow many?\nOne, please.',a:['a) pear','b) pears','c) rice'],c:0}
+];
+let deck=[],first=null,second=null,lock=false,pairs=0,questionsDone=0,questionBag=[];
+const grid=document.getElementById('grid'),pairsFound=document.getElementById('pairsFound'),questionsDoneEl=document.getElementById('questionsDone');
+function shuffle(arr){return arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(x=>x[1])}
+function init(){deck=shuffle([...pairNames,...pairNames].map((name,i)=>({id:i,name})));first=second=null;lock=false;pairs=0;questionsDone=0;questionBag=shuffle([...questions]);pairsFound.textContent='0';questionsDoneEl.textContent='0';grid.innerHTML='';deck.forEach(card=>{const btn=document.createElement('button');btn.className='card';btn.dataset.name=card.name;btn.dataset.id=card.id;btn.setAttribute('aria-label','Hidden memory card');btn.innerHTML=`<div class="card-inner"><div class="face front"></div><div class="face back">${foodIcons[card.name]}</div></div>`;btn.addEventListener('click',()=>flip(btn));grid.appendChild(btn)});document.getElementById('celebration').classList.remove('show')}
+function flip(card){if(lock||card.classList.contains('flipped')||card.classList.contains('matched'))return;card.classList.add('flipped');playFlip();if(!first){first=card;return}second=card;lock=true;if(first.dataset.name===second.dataset.name){setTimeout(()=>{first.classList.add('matched');second.classList.add('matched');first.disabled=true;second.disabled=true;pairs++;pairsFound.textContent=pairs;playDing();showQuiz();first=second=null;},420)}else{setTimeout(()=>{first.classList.remove('flipped');second.classList.remove('flipped');first=second=null;lock=false},850)}}
+function nextQuestion(){if(questionBag.length===0)questionBag=shuffle([...questions]);return questionBag.pop()}
+function showQuiz(){const item=nextQuestion();const overlay=document.getElementById('quizOverlay'),q=document.getElementById('questionText'),answers=document.getElementById('answers'),feedback=document.getElementById('feedback'),cont=document.getElementById('continueBtn');q.textContent=item.q;answers.innerHTML='';feedback.textContent='';feedback.className='feedback';cont.classList.remove('show');overlay.classList.add('show');item.a.forEach((txt,i)=>{const b=document.createElement('button');b.className='answer';b.textContent=txt;b.onclick=()=>{if(i===item.c){b.classList.add('correct');feedback.textContent='Excellent! ⭐';feedback.className='feedback good';playSuccess();[...answers.children].forEach(x=>x.disabled=true);cont.classList.add('show')}else{b.classList.add('wrong');feedback.textContent='Try again!';feedback.className='feedback bad';playWrong();setTimeout(()=>b.classList.remove('wrong'),650)}};answers.appendChild(b)});cont.onclick=()=>{overlay.classList.remove('show');questionsDone++;questionsDoneEl.textContent=questionsDone;if(pairs===8)setTimeout(showEnd,450);else lock=false}}
+function showEnd(){playFinish();const end=document.getElementById('celebration');end.classList.add('show');makeConfetti()}
+function restartGame(){init()}
+function makeConfetti(){const end=document.getElementById('celebration');end.querySelectorAll('.confetti').forEach(e=>e.remove());const colors=['#fff','#ffd65a','#ff5b6f','#6ee7ff','#68dd83','#ff9b3e'];for(let i=0;i<95;i++){const c=document.createElement('span');c.className='confetti';c.style.left=Math.random()*100+'vw';c.style.background=colors[Math.floor(Math.random()*colors.length)];c.style.animationDuration=(2.2+Math.random()*2.2)+'s';c.style.animationDelay=(Math.random()*1.1)+'s';c.style.transform=`rotate(${Math.random()*360}deg)`;end.appendChild(c)}}
+let audioCtx;
+function ctx(){if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();return audioCtx}
+function beep(freq=520,dur=.12,type='sine',vol=.08){try{const a=ctx(),o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.value=freq;g.gain.value=vol;o.connect(g);g.connect(a.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,a.currentTime+dur);o.stop(a.currentTime+dur)}catch(e){}}
+function playFlip(){beep(360,.06,'triangle',.035)}
+function playDing(){beep(660,.09,'sine',.07);setTimeout(()=>beep(880,.12,'sine',.07),90)}
+function playSuccess(){beep(700,.08,'triangle',.07);setTimeout(()=>beep(900,.08,'triangle',.07),80);setTimeout(()=>beep(1100,.13,'triangle',.07),160)}
+function playWrong(){beep(190,.16,'sawtooth',.04)}
+function playFinish(){[620,780,930,1240].forEach((f,i)=>setTimeout(()=>beep(f,.16,'sine',.08),i*120))}
+init();
+</script>
+</body>
+</html>
