@@ -289,6 +289,128 @@
     .popup { padding:20px 16px; }
     .answer-btn { font-size:18px; padding:12px 14px; }
   }
+
+/* === 1200 × 640 px Genially format override === */
+html, body {
+  width: 1200px;
+  height: 640px;
+  min-height: 640px;
+  max-height: 640px;
+  overflow: hidden;
+}
+body {
+  margin: 0;
+  display: block;
+}
+.game-wrap {
+  width: 1200px;
+  height: 640px;
+  min-height: 640px;
+  max-height: 640px;
+  padding: 8px 12px 10px;
+  overflow: hidden;
+  justify-content: flex-start;
+}
+.title {
+  font-size: 52px;
+  line-height: .9;
+  margin: 0 0 8px;
+  letter-spacing: 2px;
+  text-shadow:
+    0 4px 0 #1184c3,
+    0 7px 0 rgba(4,64,118,.55),
+    0 10px 12px rgba(0,0,0,.16);
+}
+.top-bar {
+  width: 540px;
+  height: 34px;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+.pill {
+  padding: 5px 12px;
+  border-width: 2px;
+}
+.grid {
+  width: 520px;
+  height: 520px;
+  gap: 10px;
+}
+.card-face {
+  border-radius: 11px;
+  box-shadow:
+    6px 6px 0 var(--shadow),
+    0 4px 10px rgba(0,0,0,.12);
+}
+.card.matched .card-face {
+  box-shadow:
+    6px 6px 0 #046da5,
+    0 0 0 3px rgba(255,255,255,.48),
+    0 4px 10px rgba(0,0,0,.12);
+}
+.front::before {
+  font-size: 54px;
+}
+.back {
+  padding: 7%;
+}
+.food-img {
+  max-width: 91%;
+  max-height: 89%;
+}
+.overlay,
+.celebration {
+  position: absolute;
+  width: 1200px;
+  height: 640px;
+  inset: 0;
+}
+.popup {
+  width: 520px;
+  padding: 22px;
+}
+.popup h2 {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+.question {
+  font-size: 22px;
+  margin: 10px 0 14px;
+}
+.answers {
+  gap: 9px;
+}
+.answer-btn {
+  font-size: 18px;
+  padding: 12px 14px;
+}
+.feedback {
+  min-height: 30px;
+  font-size: 22px;
+  margin-top: 10px;
+}
+.continue-btn,
+.play-again {
+  padding: 12px 24px;
+  font-size: 20px;
+  margin-top: 12px;
+}
+.cele-card {
+  width: 540px;
+  padding: 28px 24px;
+}
+.cele-card h2 {
+  font-size: 46px;
+}
+.cele-card p {
+  font-size: 20px;
+}
+@media (max-width: 1200px), (max-height: 640px) {
+  html, body {
+    transform-origin: top left;
+  }
+}
+
 </style>
 </head>
 <body>
