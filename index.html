@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=1200, initial-scale=1.0, user-scalable=no">
 <title>Memory Game</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Fredoka:wght@700&display=swap" rel="stylesheet">
@@ -290,125 +290,141 @@
     .answer-btn { font-size:18px; padding:12px 14px; }
   }
 
-/* === 1200 × 640 px Genially format override === */
+
+/* === STRICT 1200 × 640 px GENIALLY FORMAT ===
+   Fixed canvas: no vertical scroll. Everything is resized to fit. */
 html, body {
-  width: 1200px;
-  height: 640px;
-  min-height: 640px;
-  max-height: 640px;
-  overflow: hidden;
+  width: 1200px !important;
+  height: 640px !important;
+  min-width: 1200px !important;
+  min-height: 640px !important;
+  max-width: 1200px !important;
+  max-height: 640px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: var(--bg) !important;
 }
 body {
-  margin: 0;
-  display: block;
+  position: relative !important;
 }
 .game-wrap {
-  width: 1200px;
-  height: 640px;
-  min-height: 640px;
-  max-height: 640px;
-  padding: 8px 12px 10px;
-  overflow: hidden;
-  justify-content: flex-start;
+  width: 1200px !important;
+  height: 640px !important;
+  min-width: 1200px !important;
+  min-height: 640px !important;
+  max-width: 1200px !important;
+  max-height: 640px !important;
+  padding: 6px 0 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
 }
 .title {
-  font-size: 52px;
-  line-height: .9;
-  margin: 0 0 8px;
-  letter-spacing: 2px;
-  text-shadow:
-    0 4px 0 #1184c3,
-    0 7px 0 rgba(4,64,118,.55),
-    0 10px 12px rgba(0,0,0,.16);
+  font-size: 46px !important;
+  line-height: 0.9 !important;
+  margin: 0 0 6px !important;
+  letter-spacing: 2px !important;
+  text-shadow: 0 3px 0 #1184c3, 0 6px 0 rgba(4,64,118,.55), 0 8px 10px rgba(0,0,0,.16) !important;
+  -webkit-text-stroke: 1px rgba(255,255,255,.2) !important;
 }
 .top-bar {
-  width: 540px;
-  height: 34px;
-  margin-bottom: 8px;
-  font-size: 16px;
+  width: 560px !important;
+  height: 30px !important;
+  margin: 0 0 7px !important;
+  font-size: 15px !important;
 }
 .pill {
-  padding: 5px 12px;
-  border-width: 2px;
+  padding: 4px 11px !important;
+  border-width: 2px !important;
 }
 .grid {
-  width: 520px;
-  height: 520px;
-  gap: 10px;
+  width: 540px !important;
+  height: 540px !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, 126px) !important;
+  grid-template-rows: repeat(4, 126px) !important;
+  gap: 12px !important;
+  margin: 0 auto !important;
+  perspective: 1000px !important;
+}
+.card {
+  width: 126px !important;
+  height: 126px !important;
+  aspect-ratio: auto !important;
 }
 .card-face {
-  border-radius: 11px;
-  box-shadow:
-    6px 6px 0 var(--shadow),
-    0 4px 10px rgba(0,0,0,.12);
+  border-radius: 12px !important;
+  border: 2px solid rgba(2,88,145,.18) !important;
+  box-shadow: 6px 6px 0 var(--shadow), 0 4px 10px rgba(0,0,0,.12) !important;
 }
 .card.matched .card-face {
-  box-shadow:
-    6px 6px 0 #046da5,
-    0 0 0 3px rgba(255,255,255,.48),
-    0 4px 10px rgba(0,0,0,.12);
+  box-shadow: 6px 6px 0 #046da5, 0 0 0 3px rgba(255,255,255,.48), 0 4px 10px rgba(0,0,0,.12) !important;
 }
 .front::before {
-  font-size: 54px;
+  font-size: 54px !important;
 }
 .back {
-  padding: 7%;
+  padding: 7% !important;
 }
 .food-img {
-  max-width: 91%;
-  max-height: 89%;
+  max-width: 92% !important;
+  max-height: 90% !important;
 }
-.overlay,
-.celebration {
-  position: absolute;
-  width: 1200px;
-  height: 640px;
-  inset: 0;
+.overlay, .celebration {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 1200px !important;
+  height: 640px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
 }
 .popup {
-  width: 520px;
-  padding: 22px;
+  width: 520px !important;
+  max-height: 590px !important;
+  padding: 22px !important;
+  border-radius: 24px !important;
 }
-.popup h2 {
-  font-size: 28px;
-  margin-bottom: 8px;
+.popup h2 { font-size: 28px !important; margin-bottom: 8px !important; }
+.question { font-size: 22px !important; margin: 10px 0 14px !important; }
+.answers { gap: 9px !important; margin-top: 8px !important; }
+.answer-btn { font-size: 18px !important; padding: 12px 14px !important; border-radius: 14px !important; }
+.feedback { min-height: 30px !important; margin-top: 10px !important; font-size: 22px !important; }
+.continue-btn, .play-again { font-size: 20px !important; padding: 12px 24px !important; margin-top: 12px !important; }
+.cele-card { width: 520px !important; padding: 28px 24px !important; }
+.cele-card h2 { font-size: 44px !important; }
+.cele-card p { font-size: 20px !important; }
+@media (max-width: 640px) {
+  html, body { width: 1200px !important; height: 640px !important; }
+  .game-wrap { width: 1200px !important; height: 640px !important; padding: 6px 0 0 !important; }
+  .grid { width: 540px !important; height: 540px !important; grid-template-columns: repeat(4,126px) !important; grid-template-rows: repeat(4,126px) !important; gap: 12px !important; }
+  .card { width: 126px !important; height: 126px !important; }
 }
-.question {
-  font-size: 22px;
-  margin: 10px 0 14px;
+
+
+/* === CENTER CARDS PATCH ===
+   Keeps the fixed 1200×640 format and places the 4×4 card grid exactly in the center horizontally. */
+.title {
+  width: 1200px !important;
+  text-align: center !important;
 }
-.answers {
-  gap: 9px;
+.top-bar {
+  align-self: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
-.answer-btn {
-  font-size: 18px;
-  padding: 12px 14px;
+.grid {
+  align-self: center !important;
+  justify-self: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  transform: none !important;
 }
-.feedback {
-  min-height: 30px;
-  font-size: 22px;
-  margin-top: 10px;
-}
-.continue-btn,
-.play-again {
-  padding: 12px 24px;
-  font-size: 20px;
-  margin-top: 12px;
-}
-.cele-card {
-  width: 540px;
-  padding: 28px 24px;
-}
-.cele-card h2 {
-  font-size: 46px;
-}
-.cele-card p {
-  font-size: 20px;
-}
-@media (max-width: 1200px), (max-height: 640px) {
-  html, body {
-    transform-origin: top left;
-  }
+.game-wrap {
+  align-items: center !important;
 }
 
 </style>
